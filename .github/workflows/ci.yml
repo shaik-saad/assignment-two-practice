@@ -8,6 +8,10 @@ on:
     pull_request:
         branches: ["main"]
 
+#Add permissions to write in repository
+permissions:
+  contents: write
+
 jobs:
     build-and-test:
         runs-on: ubuntu-latest
