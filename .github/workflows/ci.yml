@@ -1,0 +1,64 @@
+name: Continuous Integration
+
+run-name: CI for build, test and release of the container
+
+on:
+    push:
+        branches: ["main"]
+    pull_request:
+        branches: ["main"]
+
+jobs:
+    build-and-test:
+        runs-on: ubuntu-latest
+    
+        steps:
+            - name: Checkout
+              uses: actions/checkout@v4
+              with:
+                fetch-depth: 0
+
+            # - name: Setup Docker
+            #   uses: docker/setup-buildx-action@v1
+
+            # - name: Build Container Image
+            #   uses: docker/build-push-action@v2
+            #   with:
+            #     context: .
+            #     file: ./dockerfile
+            #     load: true
+            #     tags: calculator-app-image:latest
+
+            - name: Build Docker Image
+              run: |
+                docker build -t calculator-app-image . 
+
+            - name: Test with Google Container Structure Test
+              run: |
+                curl -LO https://github.com/GoogleContainerTools/container-structure-test/releases/latest/download/container-structure-test-linux-amd64 && chmod +x container-structure-test-linux-amd64 && sudo mv container-structure-test-linux-amd64 /usr/local/bin/container-structure-test
+                container-structure-test test --image calculator-app-image --config container-test.yaml
+
+            - name: Install GitVersion
+              uses: gittools/actions/gitversion/setup@v1.1.1
+              with:
+                versionSpec: '5.12.0'
+
+            - name: Determine Version
+              id: version_step # step id used as reference for output values
+              uses: gittools/actions/gitversion/execute@v1.1.1
+
+            - name: Display GitVersion variables (with prefix)
+              run: |
+                echo "FullSemVer (env.GitVersion_FullSemVer) : ${{ env.GitVersion_FullSemVer }}"
+
+            # Create github release
+            - name: Create Release
+              id: create_release
+              uses: actions/create-release@v1
+              env: 
+                GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+              with:
+                tag_name: ${{ env.GitVersion_FullSemVer }}
+                release_name: Release ${{ env.GitVersion_FullSemVer }}
+                draft: false
+                prerelease: false
