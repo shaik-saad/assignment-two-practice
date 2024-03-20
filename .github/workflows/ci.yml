@@ -49,7 +49,7 @@ jobs:
 
             - name: Display GitVersion variables (with prefix)
               run: |
-                echo "FullSemVer (env.GitVersion_FullSemVer) : ${{ env.GitVersion_FullSemVer }}"
+                echo "FullSemVer (env.GitVersion_FullSemVer) : ${{ env.fullSemVerr }}"
 
             # Create github release
             - name: Create Release
@@ -58,7 +58,7 @@ jobs:
               env: 
                 GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
               with:
-                tag_name: ${{ env.GitVersion_FullSemVer }}
-                release_name: Release ${{ env.GitVersion_FullSemVer }}
+                tag_name: v${{ env.fullSemVer }}
+                release_name: Release v${{ env.fullSemVer }}
                 draft: false
                 prerelease: false
