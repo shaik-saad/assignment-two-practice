@@ -1,0 +1,41 @@
+# Current verison for container-structure-tests yamls
+schemaVersion: '2.0.0'
+
+# Test checks for if file exists, permissions and user ID
+fileExistenceTests:
+  - name: "JAR File Existence Test"
+    path: "/app/CalculatorApp.jar"
+    shouldExist: true
+    permissions: "-rw-r--r--"
+    uid: 0
+
+# Test checks if the file has correct expected contents
+fileContentTests:
+  - name: "JAR File Content Test"
+    path: "/app/CalculatorApp.jar"
+    expectedContents: ["META-INF/MANIFEST.MF", "Calculator.class"]
+
+# Test executes a specified command
+# Checks for expected output and error
+# as there is no way to provide input
+# it throws an error and exit's with code 1
+# Thus, expecting code to be 1 in the test
+commandTests:
+  - name: "Java Execution Test"
+    command: "java"
+    args: 
+      - -jar
+      - /app/CalculatorApp.jar
+    expectedOutput: ["Welcome to Calculator App!"]
+    expectedError: ["java.util.NoSuchElementException"]
+    exitCode: 1
+
+# Tests to check if the particular meta data is specidied or not
+metadataTest:
+  labels:
+    - key: "maintainer"
+      value: "https://github.com/shaik-saad"
+    - key: "description"
+      value: "CLI Calculator App builder"
+    - key: "version"
+      value: "1.0.0"
