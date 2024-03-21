@@ -66,3 +66,16 @@ jobs:
                 release_name: Release v${{ env.fullSemVer }}
                 draft: false
                 prerelease: false
+
+            - name: Login to GitHub Container Registry
+              uses: docker/login-action@v3
+              with:
+                registry: ghcr.io
+                username: ${{ github.actor }}
+                password: ${{ secrets.GITHUB_TOKEN }}
+
+            - name: Build the hello-docker Docker image
+              env:
+                FULL_SEM_VER: ${{ env.fullSemVer }}
+              run: |
+                 docker push ghcr.io/${{ github.actor }}/test-docker-gcr-image:${FULL_SEM_VER}
