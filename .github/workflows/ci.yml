@@ -35,12 +35,12 @@ jobs:
 
             - name: Build Docker Image
               run: |
-                docker build -t calculator-app-image . 
+                docker build -t test-docker-gcr-image . 
 
             - name: Test with Google Container Structure Test
               run: |
                 curl -LO https://github.com/GoogleContainerTools/container-structure-test/releases/latest/download/container-structure-test-linux-amd64 && chmod +x container-structure-test-linux-amd64 && sudo mv container-structure-test-linux-amd64 /usr/local/bin/container-structure-test
-                container-structure-test test --image calculator-app-image --config container-test.yaml
+                container-structure-test test --image test-docker-gcr-image --config container-test.yaml
 
             - name: Install GitVersion
               uses: gittools/actions/gitversion/setup@v1.1.1
@@ -53,7 +53,7 @@ jobs:
 
             - name: Display GitVersion variables (with prefix)
               run: |
-                echo "FullSemVer (env.GitVersion_FullSemVer) : ${{ env.fullSemVerr }}"
+                echo "FullSemVer (env.GitVersion_FullSemVer) : ${{ env.semVer }}"
 
             # Create github release
             - name: Create Release
@@ -62,8 +62,8 @@ jobs:
               env: 
                 GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
               with:
-                tag_name: v${{ env.fullSemVer }}
-                release_name: Release v${{ env.fullSemVer }}
+                tag_name: v${{ env.semVer }}
+                release_name: Release v${{ env.semVer }}
                 draft: false
                 prerelease: false
 
