@@ -51,9 +51,9 @@ jobs:
               id: version_step # step id used as reference for output values
               uses: gittools/actions/gitversion/execute@v1.1.1
 
-            - name: Display GitVersion variables (with prefix)
-              run: |
-                echo "FullSemVer (env.GitVersion_FullSemVer) : ${{ env.semVer }}"
+            # - name: Display GitVersion variables (with prefix)
+            #   run: |
+            #     echo "FullSemVer (env.GitVersion_FullSemVer) : ${{ env.semVer }}"
 
             # Create github release
             - name: Create Release
@@ -73,7 +73,10 @@ jobs:
                 registry: ghcr.io
                 username: ${{ github.actor }}
                 password: ${{ secrets.GITHUB_TOKEN }}
-
+            
+            - name: List Docker Images
+              run: docker images
+              
             - name: Build the hello-docker Docker image
               env:
                 FULL_SEM_VER: ${{ env.semVer }}
