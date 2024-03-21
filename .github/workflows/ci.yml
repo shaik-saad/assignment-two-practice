@@ -78,4 +78,4 @@ jobs:
               env:
                 FULL_SEM_VER: ${{ env.semVer }}
               run: |
-                 docker push "ghcr.io/${{ github.actor }}/test-docker-gcr-image:v${FULL_SEM_VER}"
+                 docker push "ghcr.io/${{ github.actor }}/test-docker-gcr-image:latest"
