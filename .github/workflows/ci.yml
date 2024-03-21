@@ -33,14 +33,7 @@ jobs:
             #     load: true
             #     tags: calculator-app-image:latest
 
-            - name: Build Docker Image
-              run: |
-                docker build -t test-docker-gcr-image . 
-
-            - name: Test with Google Container Structure Test
-              run: |
-                curl -LO https://github.com/GoogleContainerTools/container-structure-test/releases/latest/download/container-structure-test-linux-amd64 && chmod +x container-structure-test-linux-amd64 && sudo mv container-structure-test-linux-amd64 /usr/local/bin/container-structure-test
-                container-structure-test test --image test-docker-gcr-image --config container-test.yaml
+            
 
             - name: Install GitVersion
               uses: gittools/actions/gitversion/setup@v1.1.1
@@ -50,6 +43,15 @@ jobs:
             - name: Determine Version
               id: version_step # step id used as reference for output values
               uses: gittools/actions/gitversion/execute@v1.1.1
+
+            - name: Build Docker Image
+              run: |
+                docker build -t test-docker-gcr-image -t test-docker-gcr-image . 
+
+            - name: Test with Google Container Structure Test
+              run: |
+                curl -LO https://github.com/GoogleContainerTools/container-structure-test/releases/latest/download/container-structure-test-linux-amd64 && chmod +x container-structure-test-linux-amd64 && sudo mv container-structure-test-linux-amd64 /usr/local/bin/container-structure-test
+                container-structure-test test --image test-docker-gcr-image --config container-test.yaml
 
             # - name: Display GitVersion variables (with prefix)
             #   run: |
@@ -79,6 +81,9 @@ jobs:
               
             - name: Build the hello-docker Docker image
               env:
-                FULL_SEM_VER: ${{ env.semVer }}
+                SEM_VER: ${{ env.semVer }}
               run: |
-                 docker push ghcr.io/${{ github.actor }}/test-docker-gcr-image:latest
+                docker tag test-docker-gcr-image:latest ghcr.io/${{ github.actor }}/test-docker-gcr-image:latest
+                docker tag test-docker-gcr-image:$SEM_VER ghcr.io/${{ github.actor }}/test-docker-gcr-image:$SEM_VER
+                docker push ghcr.io/${{ github.actor }}/test-docker-gcr-image:latest
+                docker push ghcr.io/${{ github.actor }}/test-docker-gcr-image:$SEM_VER
