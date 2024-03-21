@@ -47,7 +47,7 @@ jobs:
 
             - name: Build Docker Image
               run: |
-                docker build -t test-docker-gcr-image -t test-docker-gcr-image . 
+                docker build -t test-docker-gcr-image:latest -t test-docker-gcr-image:${{env.semVer}} . 
 
             - name: Test with Google Container Structure Test
               run: |
@@ -85,6 +85,6 @@ jobs:
                 SEM_VER: ${{ env.semVer }}
               run: |
                 docker tag test-docker-gcr-image:latest ghcr.io/${{ github.actor }}/test-docker-gcr-image:latest
-                docker tag test-docker-gcr-image:latest ghcr.io/${{ github.actor }}/test-docker-gcr-image:$SEM_VER
+                docker tag test-docker-gcr-image:$SEM_VER ghcr.io/${{ github.actor }}/test-docker-gcr-image:$SEM_VER
                 docker push ghcr.io/${{ github.actor }}/test-docker-gcr-image:latest
                 docker push ghcr.io/${{ github.actor }}/test-docker-gcr-image:$SEM_VER
