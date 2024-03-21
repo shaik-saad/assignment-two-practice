@@ -76,6 +76,6 @@ jobs:
 
             - name: Build the hello-docker Docker image
               env:
-                FULL_SEM_VER: ${{ env.fullSemVer }}
+                FULL_SEM_VER: ${{ env.semVer }}
               run: |
                  docker push "ghcr.io/${{ github.actor }}/test-docker-gcr-image:v${FULL_SEM_VER}"
